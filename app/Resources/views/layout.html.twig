@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% stylesheets filter='cssrewrite'
+    '@DefaultBundle/Resources/public/css/metro.css'
+    '@DefaultBundle/Resources/public/css/metro-icons.css'
+    '@DefaultBundle/Resources/public/css/select2.css'
+    '@DefaultBundle/Resources/public/css/style.css' %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+
+
+    {% block stylesheets %}
+    {% endblock %}
+</head>
+<body>
+<div class="app-bar" data-role="appbar">
+    <a class="app-bar-element">
+        <span id="toggle-tiles-dropdown2" class="mif-apps mif-2x"></span>
+        <div class="app-bar-drop-container" data-role="dropdown" data-toggle-element="#toggle-tiles-dropdown2"
+             data-no-close="false" style="width: 324px; display: none;">
+            <div class="tile-container bg-white">
+                <div class="tile-small bg-cyan">
+                    <div class="tile-content iconic">
+                        <span class="icon mif-onedrive"></span>
+                    </div>
+                </div>
+                <div class="tile-small bg-yellow">
+                    <div class="tile-content iconic">
+                        <span class="icon mif-google"></span>
+                    </div>
+                </div>
+                <div class="tile-small bg-red">
+                    <div class="tile-content iconic">
+                        <span class="icon mif-facebook"></span>
+                    </div>
+                </div>
+                <div class="tile-small bg-green">
+                    <div class="tile-content iconic">
+                        <span class="icon mif-twitter"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <div class="app-bar-divider"></div>
+    <ul class="app-bar-menu">
+        <li data-flexorderorigin="0" data-flexorder="1"><a href="{{ path('default_homepage') }}">Home</a></li>
+        <li data-flexorderorigin="1" data-flexorder="2">
+            <a href="" class="dropdown-toggle">Products</a>
+            <ul class="d-menu" data-role="dropdown">
+                <li><a href="">Windows 10</a></li>
+                <li><a href="">Spartan</a></li>
+                <li><a href="">Outlook</a></li>
+                <li><a href="">Office 2015</a></li>
+                <li class="divider"></li>
+                <li><a href="" class="dropdown-toggle">Other Products</a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li><a href="">Internet Explorer 10</a></li>
+                        <li><a href="">Skype</a></li>
+                        <li><a href="">Surface</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li data-flexorderorigin="2" data-flexorder="3"><a href="">Support</a></li>
+        <li data-flexorderorigin="3" data-flexorder="4"><a href="">Help</a></li>
+    </ul>
+    <div class="app-bar-element">
+        <span class="dropdown-toggle">Ups</span>
+        <ul class="d-menu" data-role="dropdown">
+            <li><a href="">Windows 10</a></li>
+            <li><a href="">Spartan</a></li>
+            <li><a href="">Outlook</a></li>
+            <li><a href="">Office 2015</a></li>
+            <li class="divider"></li>
+            <li><a href="" class="dropdown-toggle">Other Products</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li><a href="">Internet Explorer 10</a></li>
+                    <li><a href="">Skype</a></li>
+                    <li><a href="">Surface</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="app-bar-element place-right">
+        <a class="dropdown-toggle fg-white"><span class="mif-enter"></span> Enter</a>
+        <div class="app-bar-drop-container bg-white fg-dark place-right" data-role="dropdown" data-no-close="true">
+            <div class="padding20">
+                <form>
+                    <h4 class="text-light">Login to service...</h4>
+                    <div class="input-control text">
+                        <span class="mif-user prepend-icon"></span>
+                        <input type="text">
+                    </div>
+                    <div class="input-control text">
+                        <span class="mif-lock prepend-icon"></span>
+                        <input type="password">
+                    </div>
+                    <label class="input-control checkbox small-check">
+                        <input type="checkbox">
+                        <span class="check"></span>
+                        <span class="caption">Remember me</span>
+                    </label>
+                    <div class="form-actions">
+                        <button class="button">Login</button>
+                        <button class="button link">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-bar-divider place-right"></div>
+    <div class="app-bar-pullbutton automatic" style="display: none;"></div>
+    <div class="clearfix" style="width: 0;"></div>
+    <nav class="app-bar-pullmenu hidden flexstyle-app-bar-menu" style="display: none;">
+        <ul class="app-bar-pullmenubar hidden app-bar-menu"></ul>
+    </nav>
+</div>{% block body %}
+
+{% endblock %}
+
+
+{% javascripts
+'@DefaultBundle/Resources/public/js/jquery-2.2.3.min.js'
+'@DefaultBundle/Resources/public/js/metro.js'
+'@DefaultBundle/Resources/public/js/select2.js' %}
+<script src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
+<script>
+    function showCharm(id) {
+        var charm = $("#" + id + "-charm").data("charm");
+        if (charm.element.data("opened") === true) {
+            charm.close();
+        } else {
+            charm.open();
+        }
+    }
+
+    function showDialog(id) {
+        var dialog = $("#" + id).data('dialog');
+        if (!dialog.element.data('opened')) {
+            dialog.open();
+        } else {
+            dialog.close();
+        }
+    }
+
+</script>
+
+{% block javascripts %}
+{% endblock %}
+
+{% for type, messages in app.session.flashBag.all %}
+    {% for message in messages %}
+        <script>
+            $(document).ready(function () {
+                $.Notify({
+                    caption: '{{ type }}',
+                    content: '{{ message|trans({}, 'DefaultBundle') }}',
+                    type: '{{ type }}'
+                });
+            });
+        </script>
+    {% endfor %}
+{% endfor %}
+
+
+</body>
+</html>

@@ -1,0 +1,264 @@
+{% extends '::layout.html.twig' %}
+
+{% block stylesheets %}
+
+    {% stylesheets filter='cssrewrite'
+    '@DefaultBundle/Resources/public/css/dropzone.css'
+    '@DefaultBundle/Resources/public/css/demo.css'
+    '@DefaultBundle/Resources/public/css/style.css'
+    '@DefaultBundle/Resources/public/css/noJS.css'
+    '@DefaultBundle/Resources/public/css/gamma.css' %}
+
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+
+    {% endstylesheets %}
+{% endblock %}
+
+{% block body %}
+
+    {% if folder %}
+        <h1 class="tile-area-title" style="text-align: center">{{ folder.name }}</h1><br>
+
+        <div data-role="charm" data-position="left" id="left-charm">
+            <h1 class="text-light">Parametres</h1><br>
+            {{ form_start(form_folder) }}
+            {{ form_errors(form_folder) }}
+            <div class="cell">
+                <label>Nom</label>
+                <div class="input-control text full-size">
+                    {{ form_errors(form_folder.name) }}
+                    {{ form_widget(form_folder.name) }}
+                </div>
+            </div>
+            <br>
+            <div class="cell">
+                <label>Taille</label>
+                <div class="input-control text full-size">
+                    {{ form_errors(form_folder.size) }}
+                    {{ form_widget(form_folder.size) }}
+                </div>
+            </div>
+            <br>
+            <div class="cell">
+                <label>Public URL to edit</label>
+                <div class="input-control text full-size">
+                    <div class="input-control file full-size" data-role="input">
+                        <input value="{{ url('folder_direct_edit', {'slug':folder.editSlug}) }}" type="text"
+                               class="input-file-wrapper" readonly="" style="z-index: 1; cursor: default;">
+                        <button class="button" type="button"><span class="mif-link"></span></button>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="cell">
+                <label>Public URL to show</label>
+                <div class="input-control text full-size">
+                    <div class="input-control file full-size" data-role="input">
+                        <input value="{{ url('folder_direct_show', {'slug':folder.showSlug}) }}" type="text"
+                               class="input-file-wrapper" readonly="" style="z-index: 1; cursor: default;">
+                        <button class="button" type="button"><span class="mif-link"></span></button>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <div class="cell" style="text-align: right">
+                <button type="button" class="button alert rounded" onclick="showDialog('dialog5')">Delete</button>
+                <button type="submit" class="button rounded">Save</button>
+            </div>
+            {{ form_rest(form_folder) }}
+            {{ form_end(form_folder) }}
+            <br>
+        </div>
+
+        <div class="padding20 align-center">
+            <a href="{{ url('folder_direct_show', {'slug':folder.showSlug}) }}">
+                <button class="button"><span class="mif-search"></span> Afficher</button>
+            </a>
+            <button class="button" id="define_cover_image" style="display:none"><span class="mif-bookmark"></span>
+                Definir en tant que photo
+                de couverture
+            </button>
+            <button class="button" id="delete_image" style="display:none"><span class="mif-bin"></span> Supprimer
+            </button>
+            <button class="button" onclick="showCharm('left')"><span class="mif-cog"></span> Parametres</button>
+        </div>
+
+        <form enctype="multipart/form-data" class="dropzone" action="{{ app.request.uri }}" method="post"
+              name="acme_dropzone_form" id="acme_dropzone_form">
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </form>
+        {% for image in images %}
+            <div data-image="{{ image.id }}" class="tile bg-transparent fg-white" data-role="tile"
+                 style="overflow: hidden">
+                <div class="tile-content iconic">
+                    <div style="width: 100%; height: 150px; border-radius: 0px; background-image: url('{% path image.media, 'big' %}'); background-size: cover; background-repeat: no-repeat;"></div>
+                    <div class="tile-label">{% path image.media, 'big' %}</div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div data-role="dialog" id="dialog5" class="padding20 dialog alert" data-close-button="true" data-type="alert"
+             style="width: auto; height: auto; visibility: visible; left: 251px; top: 427px;">
+            <h1>Delete Folder</h1>
+            <p>
+                Do you really want to delete this folder and <b>{{ images|length }}</b> images ?
+            </p><br>
+            <div style="text-align:center">
+                <button class="button"><span class="mif-cross"></span> No</button>
+                <a href="{{ path('folder_delete', {'id': folder.id}) }}">
+                    <button class="button"><span class="mif-checkmark"></span> Yes</button>
+                </a>
+            </div>
+            <span class="dialog-close-button"></span>
+        </div>
+
+    {% else %}
+        No folder found
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts
+    '@DefaultBundle/Resources/public/js/modernizr.custom.70736.js'
+    '@DefaultBundle/Resources/public/js/jquery.masonry.min.js'
+    '@DefaultBundle/Resources/public/js/jquery.history.js'
+    '@DefaultBundle/Resources/public/js/js-url.min.js'
+    '@DefaultBundle/Resources/public/js/jquerypp.custom.js'
+    '@DefaultBundle/Resources/public/js/gamma.js'
+    '@DefaultBundle/Resources/public/js/dropzone.js' %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    <script type="text/javascript">
+
+        var selected = 0;
+
+        function unselectTiles() {
+            selected = 0;
+            $("#delete_image").hide();
+            $("#define_cover_image").hide();
+
+            $(".tile.element-selected").each(function (index) {
+                $(this).removeClass("element-selected");
+            })
+        }
+
+
+        $(".tile").click(function () {
+            if ($(this).hasClass("element-selected")) {
+                $(this).removeClass("element-selected");
+                selected--;
+            }
+            else {
+                $(this).addClass("element-selected");
+                selected++;
+            }
+
+            if (selected == 1)
+                $("#define_cover_image").show();
+            else
+                $("#define_cover_image").hide();
+
+            if (selected > 0)
+                $("#delete_image").show();
+            else
+                $("#delete_image").hide();
+        });
+
+        $("#define_cover_image").click(function () {
+            var element = null;
+            $(".tile.element-selected").each(function (index) {
+                element = $(this).attr("data-image");
+            })
+            $.ajax({
+                url: '{{ path('folder_set_cover') }}',
+                type: 'POST',
+                data: {
+                    image: element, folder: '{{ folder.id }}'
+                },
+                success: function (data) {
+                    $.Notify({
+                        caption: data["status"],
+                        content: data["message"],
+                        type: data["status"]
+                    });
+                    unselectTiles();
+                },
+
+                error: function (data) {
+                    console.log(data);
+                },
+            })
+        })
+
+        $("#delete_image").click(function () {
+            var elements = [];
+            $(".tile.element-selected").each(function (index) {
+                elements.push($(this).attr("data-image"));
+            })
+            $.ajax({
+                url: '{{ path('folder_delete_image') }}',
+                type: 'POST',
+                data: {
+                    elements: elements, folder: '{{ folder.id }}'
+                },
+                success: function (data) {
+                    $.Notify({
+                        caption: data["status"],
+                        content: data["message"],
+                        type: data["status"]
+                    });
+                    $(".tile.element-selected").each(function (index) {
+                        $(this).hide();
+                    })
+                    unselectTiles();
+                },
+
+                error: function (data) {
+                    console.log(data);
+                },
+            });
+        })
+
+
+        $(function () {
+            var GammaSettings = {
+                // order is important!
+                viewport: [{
+                    width: 1200,
+                    columns: 5
+                }, {
+                    width: 900,
+                    columns: 4
+                }, {
+                    width: 500,
+                    columns: 3
+                }, {
+                    width: 320,
+                    columns: 2
+                }, {
+                    width: 0,
+                    columns: 2
+                }]
+            };
+            Gamma.init(GammaSettings, fncallback);
+            // Example how to add more items (just a dummy):
+            var page = 0,
+                    items = ['<li><div data-alt="img03" data-description="<h3>Sky high</h3>" data-max-width="1800" data-max-height="1350"><div data-src="images/xxxlarge/3.jpg" data-min-width="1300"></div><div data-src="images/xxlarge/3.jpg" data-min-width="1000"></div><div data-src="images/xlarge/3.jpg" data-min-width="700"></div><div data-src="images/large/3.jpg" data-min-width="300"></div><div data-src="images/medium/3.jpg" data-min-width="200"></div><div data-src="images/small/3.jpg" data-min-width="140"></div><div data-src="images/xsmall/3.jpg"></div><noscript><img src="images/xsmall/3.jpg" alt="img03"/></noscript></div></li><li><div data-alt="img03" data-description="<h3>Sky high</h3>" data-max-width="1800" data-max-height="1350"><div data-src="images/xxxlarge/3.jpg" data-min-width="1300"></div><div data-src="images/xxlarge/3.jpg" data-min-width="1000"></div><div data-src="images/xlarge/3.jpg" data-min-width="700"></div><div data-src="images/large/3.jpg" data-min-width="300"></div><div data-src="images/medium/3.jpg" data-min-width="200"></div><div data-src="images/small/3.jpg" data-min-width="140"></div><div data-src="images/xsmall/3.jpg"></div><noscript><img src="images/xsmall/3.jpg" alt="img03"/></noscript></div></li><li><div data-alt="img03" data-description="<h3>Sky high</h3>" data-max-width="1800" data-max-height="1350"><div data-src="images/xxxlarge/3.jpg" data-min-width="1300"></div><div data-src="images/xxlarge/3.jpg" data-min-width="1000"></div><div data-src="images/xlarge/3.jpg" data-min-width="700"></div><div data-src="images/large/3.jpg" data-min-width="300"></div><div data-src="images/medium/3.jpg" data-min-width="200"></div><div data-src="images/small/3.jpg" data-min-width="140"></div><div data-src="images/xsmall/3.jpg"></div><noscript><img src="images/xsmall/3.jpg" alt="img03"/></noscript></div></li><li><div data-alt="img03" data-description="<h3>Sky high</h3>" data-max-width="1800" data-max-height="1350"><div data-src="images/xxxlarge/3.jpg" data-min-width="1300"></div><div data-src="images/xxlarge/3.jpg" data-min-width="1000"></div><div data-src="images/xlarge/3.jpg" data-min-width="700"></div><div data-src="images/large/3.jpg" data-min-width="300"></div><div data-src="images/medium/3.jpg" data-min-width="200"></div><div data-src="images/small/3.jpg" data-min-width="140"></div><div data-src="images/xsmall/3.jpg"></div><noscript><img src="images/xsmall/3.jpg" alt="img03"/></noscript></div></li><li><div data-alt="img03" data-description="<h3>Sky high</h3>" data-max-width="1800" data-max-height="1350"><div data-src="images/xxxlarge/3.jpg" data-min-width="1300"></div><div data-src="images/xxlarge/3.jpg" data-min-width="1000"></div><div data-src="images/xlarge/3.jpg" data-min-width="700"></div><div data-src="images/large/3.jpg" data-min-width="300"></div><div data-src="images/medium/3.jpg" data-min-width="200"></div><div data-src="images/small/3.jpg" data-min-width="140"></div><div data-src="images/xsmall/3.jpg"></div><noscript><img src="images/xsmall/3.jpg" alt="img03"/></noscript></div></li>']
+
+            function fncallback() {
+                $('#loadmore').show().on('click', function () {
+                    ++page;
+                    var newitems = items[page - 1]
+                    if (page <= 1) {
+                        Gamma.add($(newitems));
+                    }
+                    if (page === 1) {
+                        $(this).remove();
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

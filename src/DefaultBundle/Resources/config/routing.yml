@@ -1,0 +1,27 @@
+default_homepage:
+    path:     /
+    defaults: { _controller: DefaultBundle:Default:index }
+
+folder_page:
+    path:       /folder/edit/{id}
+    defaults: { _controller: DefaultBundle:Default:folderEdit }
+
+folder_delete:
+    path:       /folder/delete/{id}
+    defaults: { _controller: DefaultBundle:Default:folderDelete }
+
+folder_delete_image:
+    path:       /deleteImage
+    defaults: { _controller: DefaultBundle:Default:deleteImage }
+
+folder_set_cover:
+    path:       /setCover
+    defaults: { _controller: DefaultBundle:Default:setCover }
+
+folder_direct_show:
+    path:       /folder/direct/show/{slug}
+    defaults: { _controller: DefaultBundle:Default:directShow }
+
+folder_direct_edit:
+    path:       /folder/direct/edit/{slug}
+    defaults: { _controller: DefaultBundle:Default:directEdit }

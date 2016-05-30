@@ -1,0 +1,21 @@
+{% extends '::layout.html.twig' %}
+
+{% block stylesheets %}
+    {% stylesheets '@DefaultBundle/Resources/public/css/dropzone.css' filter='cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block body %}
+
+    <form enctype="multipart/form-data" class="dropzone" action="{{ app.request.uri }}" method="post" name="acme_dropzone_form" id="acme_dropzone_form">
+        {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@DefaultBundle/Resources/public/js/dropzone.js' %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

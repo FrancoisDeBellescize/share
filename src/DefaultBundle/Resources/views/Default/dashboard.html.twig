@@ -1,0 +1,54 @@
+{% extends '::layout.html.twig' %}
+
+{% block body %}
+    <div data-role="charm" data-position="left" id="left-charm">
+        <h1 class="text-light">Nouveau dossier</h1><br>
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="cell">
+            <label>Nom</label>
+            <div class="input-control text full-size">
+                {{ form_errors(form.name) }}
+                {{ form_widget(form.name) }}
+            </div>
+        </div>
+        <br>
+        <div class="cell">
+            <label>Taille</label>
+            <div class="input-control text full-size">
+                {{ form_errors(form.size) }}
+                {{ form_widget(form.size) }}
+            </div>
+        </div>
+        <br>
+        <br>
+        <button type="submit" class="button rounded">Save</button>
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+        <br>
+    </div>
+    <div class="padding20 align-center">
+        <button class="button" onclick="showCharm('left')"><span class="mif-folder-plus"></span> Nouveau dossier
+        </button>
+    </div>
+    <div class="tile-group double">
+        <span class="tile-group-title">General</span>
+        <div class="tile-container">
+            {% for folder in folders %}
+                <a class="{{ folder.size }} bg-red fg-white" data-role="tile"  href="{{ path('folder_page', {'id': folder.id}) }}">
+                    <div class="tile-content {% if folder.cover %}zooming{% else %}iconic{% endif %}">
+                        {% if folder.cover %}
+                            <div class="slide">
+                                <img class="img-tiles" src="{% path folder.cover.media, 'big' %}">
+                            </div>
+                        {% else %}
+                            <span class="icon mif-image"></span>
+                        {% endif %}
+                        <div class="tile-label">{{ folder.name }}</div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

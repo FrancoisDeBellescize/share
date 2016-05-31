@@ -17,7 +17,7 @@
 {% block body %}
 
     {% if folder %}
-        <h1 class="tile-area-title" style="text-align: center">{{ folder.name }}</h1><br>
+        <h1 class="tile-area-title" style="text-align: center">{{ folder.name }}<br><small>{{ images.lenght }} photos</small></h1><br>
 
         <div data-role="charm" data-position="left" id="left-charm">
             <h1 class="text-light">Parametres</h1><br>
@@ -40,7 +40,7 @@
             </div>
             <br>
             <div class="cell">
-                <label>Public URL to edit</label>
+                <label>Lien pour editer</label>
                 <div class="input-control text full-size">
                     <div class="input-control file full-size" data-role="input">
                         <input value="{{ url('folder_direct_edit', {'slug':folder.editSlug}) }}" type="text"
@@ -51,7 +51,7 @@
             </div>
             <br>
             <div class="cell">
-                <label>Public URL to show</label>
+                <label>Lien pour visionner</label>
                 <div class="input-control text full-size">
                     <div class="input-control file full-size" data-role="input">
                         <input value="{{ url('folder_direct_show', {'slug':folder.showSlug}) }}" type="text"

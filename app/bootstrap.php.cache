@@ -1282,7 +1282,7 @@ public static $statusTexts = array(
 415 =>'Unsupported Media Type',
 416 =>'Requested Range Not Satisfiable',
 417 =>'Expectation Failed',
-418 =>'I\'m a teapot', 422 =>'Unprocessable Entity', 423 =>'Locked', 424 =>'Failed Dependency', 425 =>'Reserved for WebDAV advanced collections expired proposal', 426 =>'Upgrade Required', 428 =>'Precondition Required', 429 =>'Too Many Requests', 431 =>'Request Header Fields Too Large', 451 =>'Unavailable For Legal Reasons', 500 =>'Internal Server Error',
+418 =>'I\'m a teapot', 421 =>'Misdirected Request', 422 =>'Unprocessable Entity', 423 =>'Locked', 424 =>'Failed Dependency', 425 =>'Reserved for WebDAV advanced collections expired proposal', 426 =>'Upgrade Required', 428 =>'Precondition Required', 429 =>'Too Many Requests', 431 =>'Request Header Fields Too Large', 451 =>'Unavailable For Legal Reasons', 500 =>'Internal Server Error',
 501 =>'Not Implemented',
 502 =>'Bad Gateway',
 503 =>'Service Unavailable',
@@ -2074,6 +2074,10 @@ if ($e instanceof InactiveScopeException && self::EXCEPTION_ON_INVALID_REFERENCE
 return;
 }
 throw $e;
+} catch (\Throwable $e) {
+unset($this->loading[$id]);
+unset($this->services[$id]);
+throw $e;
 }
 unset($this->loading[$id]);
 return $service;
@@ -2272,11 +2276,11 @@ protected $booted;
 protected $name;
 protected $startTime;
 protected $loadClassCache;
-const VERSION ='2.3.41';
-const VERSION_ID = 20341;
+const VERSION ='2.3.42';
+const VERSION_ID = 20342;
 const MAJOR_VERSION = 2;
 const MINOR_VERSION = 3;
-const RELEASE_VERSION = 41;
+const RELEASE_VERSION = 42;
 const EXTRA_VERSION ='';
 public function __construct($environment, $debug)
 {
@@ -3076,6 +3080,10 @@ $this->container->set('request', $request,'request');
 try {
 $response = parent::handle($request, $type, $catch);
 } catch (\Exception $e) {
+$this->container->set('request', null,'request');
+$this->container->leaveScope('request');
+throw $e;
+} catch (\Throwable $e) {
 $this->container->set('request', null,'request');
 $this->container->leaveScope('request');
 throw $e;

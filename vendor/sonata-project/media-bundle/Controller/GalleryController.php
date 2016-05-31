@@ -25,7 +25,7 @@ class GalleryController extends Controller
             'enabled' => true,
         ));
 
-        return $this->render('SonataMediaBundle:Gallery:dashboard.html.twig', array(
+        return $this->render('SonataMediaBundle:Gallery:index.html.twig', array(
             'galleries'   => $galleries,
         ));
     }

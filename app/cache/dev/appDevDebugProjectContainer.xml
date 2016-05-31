@@ -429,7 +429,7 @@
     <parameter key="assetic.variables" type="collection"/>
     <parameter key="assetic.java.bin">C:\ProgramData\Oracle\Java\javapath\java.EXE</parameter>
     <parameter key="assetic.node.bin">/usr/bin/node</parameter>
-    <parameter key="assetic.ruby.bin">/usr/bin/ruby</parameter>
+    <parameter key="assetic.ruby.bin">C:\Ruby23-x64\bin\ruby.EXE</parameter>
     <parameter key="assetic.sass.bin">/usr/bin/sass</parameter>
     <parameter key="assetic.reactjsx.bin">/usr/bin/jsx</parameter>
     <parameter key="assetic.filter.cssrewrite.class">Assetic\Filter\CssRewriteFilter</parameter>
@@ -1721,7 +1721,7 @@
       <argument type="collection">
         <argument type="service">
           <service class="Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider" public="false">
-            <argument>574c0e35a3238</argument>
+            <argument>574d6c7b7df02</argument>
           </service>
         </argument>
       </argument>
@@ -1828,7 +1828,7 @@
         <argument type="service">
           <service class="Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener" public="false">
             <argument type="service" id="security.context"/>
-            <argument>574c0e35a3238</argument>
+            <argument>574d6c7b7df02</argument>
             <argument type="service" id="monolog.logger.security" on-invalid="null"/>
           </service>
         </argument>
@@ -2924,7 +2924,7 @@
       <argument>C:\wamp\www\share\app/../web/uploads/media</argument>
       <argument>false</argument>
     </service>
-    <service id="sonata.media.adapter.service.s3" class="AmazonS3">
+    <service id="sonata.media.adapter.service.s3" class="Aws\S3\S3Client" factory-method="factory" factory-class="Aws\S3\S3Client">
       <argument type="collection"/>
     </service>
     <service id="sonata.media.filesystem.local" class="Gaufrette\Filesystem">
